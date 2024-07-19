@@ -1,13 +1,13 @@
 import React, { useState, useContext, lazy, Suspense } from 'react';
 import '../blocks/login/login.css';
-// import { CurrentUserContext } from 'shell/CurrentUserContext';
-// const CurrentUserContext = lazy(() => import('shell/CurrentUserContext'));
+const ServiceProvider = lazy(() => import('shell/CurrentUserContext.ServiceProvider'));
 // const CurrentUserContext = lazy(() => import('shell/CurrentUserContext').catch(() => {
 //   return { default: () => <>Component is not available!</> };
 // }));
 
 function Login({ onLogin }) {
-  // console.log(CurrentUserContext);
+  console.log("HereWeGoAgain")
+  console.log(ServiceProvider)
   // const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

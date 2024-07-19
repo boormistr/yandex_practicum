@@ -1,6 +1,6 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import { Route, Switch, BrowserRouter as Router, useHistory } from 'react-router-dom';
-import { CurrentUserContext } from './contexts/CurrentUserContext';
+import {ServiceProvider} from './contexts/CurrentUserContext';
 
 const Header = React.lazy(() => import('./components/Header'));
 const Footer = React.lazy(() => import('./components/Footer'));
@@ -165,7 +165,7 @@ function App() {
     }
 
     return (
-        <CurrentUserContext.Provider value={currentUser}>
+        <ServiceProvider value={currentUser}>
             <div className="page__content">
                 <Suspense fallback={<div>Loading...</div>}>
                     <Router>
@@ -214,8 +214,8 @@ function App() {
                     </Router>
                 </Suspense>
             </div>
-        </CurrentUserContext.Provider>
+        </ServiceProvider>
     );
 }
-
+console.log('App shell\n' + ServiceProvider)
 export default App;

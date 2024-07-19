@@ -1,12 +1,13 @@
 import React, { useState, useContext, lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
-import { CurrentUserContext } from 'shell/CurrentUserContext';
+// import { CurrentUserContext } from 'shell/CurrentUserContext';
 // const CurrentUserContext = lazy(() => import('shell/CurrentUserContext'));
 // const CurrentUserContext = lazy(() => import('shell/CurrentUserContext').catch(() => {
 //   return { default: () => <>Component is not available!</> };
 // }));
 
 function Register({ onRegister }) {
+  // console.log(CurrentUserContext)
   // const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

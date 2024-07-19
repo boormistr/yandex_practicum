@@ -2,27 +2,35 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { ModuleFederationPlugin } = require('webpack').container;
 
 module.exports = {
+    entry: './src/index',
     mode: 'development',
-    entry: './src/index.js',
     target: 'web',
     devServer: {
-        port: 3005,
-        historyApiFallback: true,
-        hot: 'only',
         headers: {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
             'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
         },
+        port: 3005,
+        historyApiFallback: true,
+        hot: 'only',
     },
     output: {
         publicPath: 'auto',
+        chunkFilename: '[id].[contenthash].js',
     },
     resolve: {
-        extensions: ['.js', '.jsx'],
+        extensions: ['.js', '.mjs', '.jsx', '.css'],
     },
     module: {
         rules: [
+            {
+                test: /\.m?js$/,
+                type: 'javascript/auto',
+                resolve: {
+                    fullySpecified: false,
+                },
+            },
             {
                 test: /\.jsx?$/,
                 loader: 'babel-loader',
@@ -38,15 +46,13 @@ module.exports = {
         ],
     },
     plugins: [
-        new HtmlWebpackPlugin({
-            template: './public/index.html',
-        }),
         new ModuleFederationPlugin({
             name: 'profile',
             filename: 'remoteEntry.js',
             remotes: {
                 shell: 'shell@http://localhost:3002/remoteEntry.js',
                 cards: 'cards@http://localhost:3004/remoteEntry.js',
+                profile: 'profile@http://localhost:3005/remoteEntry.js',
             },
             exposes: {
                 './EditProfilePopup': './src/components/EditProfilePopup',
@@ -56,19 +62,20 @@ module.exports = {
                 react: {
                     singleton: true,
                     requiredVersion: '^17.0.0',
-                    eager: false
                 },
                 'react-dom': {
                     singleton: true,
                     requiredVersion: '^17.0.0',
-                    eager: false
                 },
                 'react-router-dom': {
                     singleton: true,
                     requiredVersion: '^5.0.0',
-                    eager: false
                 },
             },
+        }),
+        new HtmlWebpackPlugin({
+            template: './public/index.html',
+            publicPath: '/',
         }),
     ],
 };
