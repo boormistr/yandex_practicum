@@ -260,5 +260,5 @@ sketch
 # Ignore all local history of files
 .history
 .ionide
-
+plan.txt
 # End of https://www.toptal.com/developers/gitignore/api/node,react,visualstudiocode,jetbrains+all

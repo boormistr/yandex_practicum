@@ -232,5 +232,5 @@ function App() {
     </CurrentUserContext.Provider>
   );
 }
-
+console.log(CurrentUserContext.currentUser)
 export default App;
