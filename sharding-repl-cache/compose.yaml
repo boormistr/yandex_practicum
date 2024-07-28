@@ -1,0 +1,247 @@
+version: '3'
+name: sharding-repl-cache
+services:
+  configSrv1:
+    image: mongo:latest
+    container_name: configSrv1
+    restart: always
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.10
+    volumes:
+      - config-data1:/data/db
+    command: ["mongod", "--configsvr", "--replSet", "configReplSet", "--bind_ip_all", "--port", "27017"]
+
+  configSrv2:
+    image: mongo:latest
+    container_name: configSrv2
+    restart: always
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.11
+    volumes:
+      - config-data2:/data/db
+    command: ["mongod", "--configsvr", "--replSet", "configReplSet", "--bind_ip_all", "--port", "27017"]
+
+  configSrv3:
+    image: mongo:latest
+    container_name: configSrv3
+    restart: always
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.12
+    volumes:
+      - config-data3:/data/db
+    command: ["mongod", "--configsvr", "--replSet", "configReplSet", "--bind_ip_all", "--port", "27017"]
+
+  shard1a:
+    image: mongo:latest
+    container_name: shard1a
+    restart: always
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.13
+    volumes:
+      - shard1a-data:/data/db
+    command: ["mongod", "--shardsvr", "--replSet", "shard1", "--bind_ip_all", "--port", "27018"]
+
+  shard1b:
+    image: mongo:latest
+    container_name: shard1b
+    restart: always
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.14
+    volumes:
+      - shard1b-data:/data/db
+    command: ["mongod", "--shardsvr", "--replSet", "shard1", "--bind_ip_all", "--port", "27018"]
+
+  shard2a:
+    image: mongo:latest
+    container_name: shard2a
+    restart: always
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.15
+    volumes:
+      - shard2a-data:/data/db
+    command: ["mongod", "--shardsvr", "--replSet", "shard2", "--bind_ip_all", "--port", "27019"]
+
+  shard2b:
+    image: mongo:latest
+    container_name: shard2b
+    restart: always
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.16
+    volumes:
+      - shard2b-data:/data/db
+    command: ["mongod", "--shardsvr", "--replSet", "shard2", "--bind_ip_all", "--port", "27019"]
+
+  shard3a:
+    image: mongo:latest
+    container_name: shard3a
+    restart: always
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.17
+    volumes:
+      - shard3a-data:/data/db
+    command: ["mongod", "--shardsvr", "--replSet", "shard3", "--bind_ip_all", "--port", "27020"]
+
+  shard3b:
+    image: mongo:latest
+    container_name: shard3b
+    restart: always
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.18
+    volumes:
+      - shard3b-data:/data/db
+    command: ["mongod", "--shardsvr", "--replSet", "shard3", "--bind_ip_all", "--port", "27020"]
+
+  mongos_router:
+    image: mongo:latest
+    container_name: mongos_router
+    restart: always
+    ports:
+      - "27021:27021"
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.19
+    command:
+      [
+        "mongos",
+        "--configdb",
+        "configReplSet/configSrv1:27017,configSrv2:27017,configSrv3:27017",
+        "--bind_ip_all",
+        "--port",
+        "27021"
+      ]
+    depends_on:
+      - configSrv1
+      - configSrv2
+      - configSrv3
+      - shard1a
+      - shard1b
+      - shard2a
+      - shard2b
+      - shard3a
+      - shard3b
+
+  redis_1:
+    image: "redis:latest"
+    container_name: redis_1
+    ports:
+      - "6379"
+    volumes:
+      - redis_1_data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.21
+
+  redis_2:
+    image: "redis:latest"
+    container_name: redis_2
+    ports:
+      - "6379"
+    volumes:
+      - redis_2_data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.22
+
+  redis_3:
+    image: "redis:latest"
+    container_name: redis_3
+    ports:
+      - "6379"
+    volumes:
+      - redis_3_data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.23
+
+  redis_4:
+    image: "redis:latest"
+    container_name: redis_4
+    ports:
+      - "6379"
+    volumes:
+      - redis_4_data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.24
+
+  redis_5:
+    image: "redis:latest"
+    container_name: redis_5
+    ports:
+      - "6379"
+    volumes:
+      - redis_5_data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.25
+
+  redis_6:
+    image: "redis:latest"
+    container_name: redis_6
+    ports:
+      - "6379"
+    volumes:
+      - redis_6_data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.26
+
+  pymongo_api:
+    container_name: pymongo_api
+    build:
+      context: api_app
+      dockerfile: Dockerfile
+    image: kazhem/pymongo_api:1.0.0
+    depends_on:
+      - mongos_router
+    ports:
+      - 8080:8080
+    environment:
+      MONGODB_URL: "mongodb://mongos_router:27021"
+      MONGODB_DATABASE_NAME: "somedb"
+      REDIS_URL: "redis://redis1:6379"
+
+networks:
+  app-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 173.17.0.0/16
+
+volumes:
+  config-data1:
+  config-data2:
+  config-data3:
+  shard1a-data:
+  shard1b-data:
+  shard2a-data:
+  shard2b-data:
+  shard3a-data:
+  shard3b-data:
+  redis_1_data: { }
+  redis_2_data: { }
+  redis_3_data: { }
+  redis_4_data: { }
+  redis_5_data: { }
+  redis_6_data: { }
